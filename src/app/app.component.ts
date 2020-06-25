@@ -16,6 +16,7 @@ export class AppComponent {
   interval
   timeString: string = ""
   alerts: string[] = []
+  audio = new Audio("src/notify.mp3");
 
   validateInput() {
     if (this.worktime > 0 && this.breaktime > 0) {
@@ -30,6 +31,7 @@ export class AppComponent {
   start(worktime, breaktime) {
     this.worktime = worktime
     this.breaktime = breaktime
+    this.audio.load()
 
     if (this.validateInput()) {
       this.active = true
@@ -53,6 +55,8 @@ export class AppComponent {
         this.setTimeString(this.timeleft)
       } else {
         clearInterval(this.interval);
+        // this.playAudio();
+        this.audio.play()
         this.work = !this.work
         this.work ? this.startTimer(this.worktime) : this.startTimer(this.breaktime)
       }
@@ -65,5 +69,12 @@ export class AppComponent {
     this.timeString =
       mins + (mins == 1 ? " minute, " : " minutes, ") +
       secs + (secs == 1 ? " second" : " seconds")
+  }
+
+  playAudio() {
+    let audio = new Audio();
+    audio.src = "src/notify.mp3";
+    audio.load();
+    audio.play();
   }
 }

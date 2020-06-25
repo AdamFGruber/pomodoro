@@ -5,7 +5,7 @@
     Welcome to {{ title }}!
   </h1>
 </div>
-<div *ngIf="!active">
+<div *ngIf="!active" style="padding-left:10px">
   <form>
     <label>Work Timer</label><br>
     <input #worktime type="number" ngModel> minutes<br>
@@ -14,7 +14,7 @@
   </form><br>
   <button (click)="start(worktime.value, breaktime.value)" class="btn btn-primary">Start Pomodoro!</button><br>
 </div>
-<div *ngIf="active">
+<div *ngIf="active" style="font-size:200%; padding-top:50px; padding-left:10px">
   {{work ? "work" : "break"}} time left: {{timeString}}
   <br><br><button (click)="stop()" class="btn btn-primary">Stop Pomodoro!</button><br>
 </div>
