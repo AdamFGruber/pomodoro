@@ -26,7 +26,8 @@
     "zone.js": "~0.8.26",
     "@clr/ui": "^0.13.11",
     "@clr/icons": "^0.13.11",
-    "@webcomponents/custom-elements": "^1.0.0"
+    "@webcomponents/custom-elements": "^1.0.0",
+    "@ngrx/store": "^6.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.8.0",
