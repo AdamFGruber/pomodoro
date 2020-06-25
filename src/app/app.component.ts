@@ -15,13 +15,14 @@ export class AppComponent {
   timeleft: number = 0
   interval
   timeString: string = ""
+  alerts: string[] = []
 
   validateInput() {
     if (this.worktime > 0 && this.breaktime > 0) {
       return true
     }
     else {
-      console.log("invalid input")
+      this.alerts.push("Invalid input, enter a number greater than 0.")
       return false
     }
   }

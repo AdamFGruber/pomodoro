@@ -12,9 +12,18 @@
     <label>Break Timer</label><br>
     <input #breaktime type="number" ngModel> minutes<br>
   </form><br>
-  <button (click)="start(worktime.value, breaktime.value)">Start Pomodoro!</button><br>
+  <button (click)="start(worktime.value, breaktime.value)" class="btn btn-primary">Start Pomodoro!</button><br>
 </div>
 <div *ngIf="active">
   {{work ? "work" : "break"}} time left: {{timeString}}
-  <br><br><button (click)="stop()">Stop Pomodoro!</button><br>
+  <br><br><button (click)="stop()" class="btn btn-primary">Stop Pomodoro!</button><br>
 </div>
+<clr-alerts>
+  <clr-alert *ngFor="let message of alerts" [clrAlertType]="'warning'">
+    <clr-alert-item>
+      <span class="alert-text">
+        {{message}}
+      </span>
+    </clr-alert-item>
+  </clr-alert>
+</clr-alerts>
