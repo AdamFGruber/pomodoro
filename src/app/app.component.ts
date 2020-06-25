@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { start, stop, swap } from './mode.actions';
 
 @Component({
   selector: 'app-root',
@@ -8,15 +11,18 @@ import { Component } from '@angular/core';
 
 export class AppComponent {
   title: string = 'pomodoro';
-  active: boolean = false
+  mode$: Observable<number>
   worktime: number = 25
   breaktime: number = 5
-  work: boolean = true
   timeleft: number = 0
   interval
   timeString: string = ""
   alerts: string[] = []
   audio = new Audio("src/notify.mp3");
+
+  constructor(private store: Store<{ mode: number }>) {
+    this.mode$ = store.pipe(select('mode'));
+  }
 
   validateInput() {
     if (this.worktime > 0 && this.breaktime > 0) {
@@ -34,19 +40,19 @@ export class AppComponent {
     this.audio.load()
 
     if (this.validateInput()) {
-      this.active = true
-      this.work ? this.startTimer(this.worktime) : this.startTimer(this.breaktime)
+      this.store.dispatch(start());
+      this.startTimer()
     }
   }
 
   stop() {
     clearInterval(this.interval);
     this.timeleft = 0
-    this.work = true
-    this.active = false
+    this.store.dispatch(stop());
   }
 
-  startTimer(minutes) {
+  startTimer() {
+    var minutes = this.worktime
     this.timeleft = Math.floor(minutes * 60)
     this.setTimeString(this.timeleft)
     this.interval = setInterval(() => {
@@ -57,8 +63,8 @@ export class AppComponent {
         clearInterval(this.interval);
         // this.playAudio();
         this.audio.play()
-        this.work = !this.work
-        this.work ? this.startTimer(this.worktime) : this.startTimer(this.breaktime)
+        this.store.dispatch(swap());
+        this.startTimer()
       }
     }, 1000)
   }
