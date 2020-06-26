@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { START, STOP, SWAP } from './mode.reducer';
 
 interface AppState {
-  mode: number;
+  mode: number
 }
 
 @Component({
@@ -14,7 +14,7 @@ interface AppState {
 })
 
 export class AppComponent {
-  title: string = 'pomodoro';
+  title: string = 'pomodoro'
   mode$: Observable<number>
   worktime: number = 25
   breaktime: number = 5
@@ -22,10 +22,10 @@ export class AppComponent {
   interval
   timeString: string = ""
   alerts: string[] = []
-  audio = new Audio("src/notify.mp3");
+  audio = new Audio("src/notify.mp3")
 
   constructor(private store: Store<AppState>) {
-    this.mode$ = store.pipe(select('mode'));
+    this.mode$ = store.pipe(select('mode'))
     this.modeSubscribe()
     this.audio.load()
   }
@@ -34,7 +34,7 @@ export class AppComponent {
     this.mode$.subscribe({
       next: (value) => {
         this.timeleft = 0
-        clearInterval(this.interval);
+        clearInterval(this.interval)
 
         if (value == 1) {
           this.startTimer(this.worktime)
@@ -46,8 +46,8 @@ export class AppComponent {
     })
   }
 
-  validateInput() {
-    if (this.worktime > 0 && this.breaktime > 0) {
+  validateInput(worktime: number, breaktime: number) {
+    if (worktime > 0 && breaktime > 0) {
       return true
     }
     else {
@@ -56,11 +56,10 @@ export class AppComponent {
     }
   }
 
-  start(worktime, breaktime) {
-    this.worktime = worktime
-    this.breaktime = breaktime
-
-    if (this.validateInput()) {
+  start(worktime: number, breaktime: number) {
+    if (this.validateInput(worktime, breaktime)) {
+      this.worktime = worktime
+      this.breaktime = breaktime
       this.store.dispatch({ type: START })
     }
   }
@@ -74,7 +73,7 @@ export class AppComponent {
     this.setTimeString(this.timeleft)
     this.interval = setInterval(() => {
       if (this.timeleft > 1) {
-        this.timeleft--;
+        this.timeleft--
         this.setTimeString(this.timeleft)
       }
       else {

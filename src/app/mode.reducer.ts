@@ -1,10 +1,10 @@
 import { Action } from '@ngrx/store';
 
-export const START = 'START';
-export const STOP = 'STOP';
-export const SWAP = 'SWAP';
+export const START = 'START'
+export const STOP = 'STOP'
+export const SWAP = 'SWAP'
 
-const initialState = 0;
+const initialState: number = 0
 
 export function modeReducer(state: number = initialState, action: Action) {
   switch (action.type) {
