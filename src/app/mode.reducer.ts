@@ -1,14 +1,30 @@
-import { createReducer, on } from '@ngrx/store';
-import { start, stop, swap } from './mode.actions';
+import { Action } from '@ngrx/store';
 
-export const initialState = 0;
+export const START = 'START';
+export const STOP = 'STOP';
+export const SWAP = 'SWAP';
 
-const _modeReducer = createReducer(initialState,
-  on(start, state => { if (state == 0) { 1 } else { state } }),
-  on(stop, state => 0),
-  on(swap, state => { if (state == 1) { 2 } else if (state == 2) { 1 } else { state } }),
-);
+const initialState = 0;
 
-export function modeReducer(state, action) {
-  return _modeReducer(state, action);
+export function modeReducer(state: number = initialState, action: Action) {
+  switch (action.type) {
+    case START:
+      {
+        return (state == 0) ? 1 : state
+      }
+    case STOP:
+      { return 0 }
+    case SWAP:
+      {
+        if (state == 1) {
+          return 2
+        }
+        else if (state == 2) {
+          return 1
+        }
+        else return state
+      }
+    default:
+      return state;
+  }
 }

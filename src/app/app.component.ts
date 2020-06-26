@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { start, stop, swap } from './mode.actions';
+import { START, STOP, SWAP } from './mode.reducer';
+
+interface AppState {
+  mode: number;
+}
 
 @Component({
   selector: 'app-root',
@@ -20,7 +24,7 @@ export class AppComponent {
   alerts: string[] = []
   audio = new Audio("src/notify.mp3");
 
-  constructor(private store: Store<{ mode: number }>) {
+  constructor(private store: Store<AppState>) {
     this.mode$ = store.pipe(select('mode'));
   }
 
@@ -40,7 +44,7 @@ export class AppComponent {
     this.audio.load()
 
     if (this.validateInput()) {
-      this.store.dispatch(start());
+      this.store.dispatch({ type: START })
       this.startTimer()
     }
   }
@@ -48,11 +52,11 @@ export class AppComponent {
   stop() {
     clearInterval(this.interval);
     this.timeleft = 0
-    this.store.dispatch(stop());
+    this.store.dispatch({ type: STOP })
   }
 
   startTimer() {
-    var minutes = this.worktime
+    var minutes = this.worktime // fix!!
     this.timeleft = Math.floor(minutes * 60)
     this.setTimeString(this.timeleft)
     this.interval = setInterval(() => {
@@ -61,9 +65,8 @@ export class AppComponent {
         this.setTimeString(this.timeleft)
       } else {
         clearInterval(this.interval);
-        // this.playAudio();
         this.audio.play()
-        this.store.dispatch(swap());
+        this.store.dispatch({ type: SWAP })
         this.startTimer()
       }
     }, 1000)

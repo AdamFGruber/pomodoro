@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
+import { modeReducer } from './mode.reducer';
 
 @NgModule({
   declarations: [
@@ -15,7 +15,7 @@ import { reducers, metaReducers } from './reducers';
     BrowserModule,
     ClarityModule,
     BrowserAnimationsModule,
-    StoreModule.forRoot(reducers, { metaReducers })
+    StoreModule.forRoot({ mode: modeReducer })
   ],
   providers: [],
   bootstrap: [AppComponent]

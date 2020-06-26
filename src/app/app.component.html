@@ -5,7 +5,7 @@
     Welcome to {{ title }}!
   </h1>
 </div>
-<div *ngIf="mode$ == 0" style="padding-left:10px">
+<div *ngIf="(mode$ | async) == 0" style="padding-left:10px">
   <form>
     <label>Work Timer</label><br>
     <input #worktime type="number" ngModel> minutes<br>
@@ -14,10 +14,11 @@
   </form><br>
   <button (click)="start(worktime.value, breaktime.value)" class="btn btn-primary">Start Pomodoro!</button><br>
 </div>
-<div *ngIf="mode$ >= 1" style="font-size:200%; padding-top:50px; padding-left:10px">
-  {{work ? "work" : "break"}} time left: {{timeString}}
+<div *ngIf="(mode$ | async) >= 1" style="font-size:200%; padding-top:50px; padding-left:10px">
+  {{(mode$ | async) == 1 ? "work" : "break"}} time left: {{timeString}}
   <br><br><button (click)="stop()" class="btn btn-primary">Stop Pomodoro!</button><br>
 </div>
+<div>Current Mode: {{ mode$ | async }}</div>
 <clr-alerts>
   <clr-alert *ngFor="let message of alerts" [clrAlertType]="'warning'">
     <clr-alert-item>
