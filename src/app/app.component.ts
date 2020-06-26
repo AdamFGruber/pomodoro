@@ -26,6 +26,24 @@ export class AppComponent {
 
   constructor(private store: Store<AppState>) {
     this.mode$ = store.pipe(select('mode'));
+    this.modeSubscribe()
+    this.audio.load()
+  }
+
+  modeSubscribe() {
+    this.mode$.subscribe({
+      next: (value) => {
+        this.timeleft = 0
+        clearInterval(this.interval);
+
+        if (value == 1) {
+          this.startTimer(this.worktime)
+        }
+        else if (value == 2) {
+          this.startTimer(this.breaktime)
+        }
+      }
+    })
   }
 
   validateInput() {
@@ -41,33 +59,27 @@ export class AppComponent {
   start(worktime, breaktime) {
     this.worktime = worktime
     this.breaktime = breaktime
-    this.audio.load()
 
     if (this.validateInput()) {
       this.store.dispatch({ type: START })
-      this.startTimer()
     }
   }
 
   stop() {
-    clearInterval(this.interval);
-    this.timeleft = 0
     this.store.dispatch({ type: STOP })
   }
 
-  startTimer() {
-    var minutes = this.worktime // fix!!
+  startTimer(minutes: number) {
     this.timeleft = Math.floor(minutes * 60)
     this.setTimeString(this.timeleft)
     this.interval = setInterval(() => {
       if (this.timeleft > 1) {
         this.timeleft--;
         this.setTimeString(this.timeleft)
-      } else {
-        clearInterval(this.interval);
+      }
+      else {
         this.audio.play()
         this.store.dispatch({ type: SWAP })
-        this.startTimer()
       }
     }, 1000)
   }
@@ -78,12 +90,5 @@ export class AppComponent {
     this.timeString =
       mins + (mins == 1 ? " minute, " : " minutes, ") +
       secs + (secs == 1 ? " second" : " seconds")
-  }
-
-  playAudio() {
-    let audio = new Audio();
-    audio.src = "src/notify.mp3";
-    audio.load();
-    audio.play();
   }
 }
