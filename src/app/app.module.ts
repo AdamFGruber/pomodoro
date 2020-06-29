@@ -7,6 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
 import { modeReducer } from './mode.reducer';
 
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './effects/auth.effects';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -15,7 +18,8 @@ import { modeReducer } from './mode.reducer';
     BrowserModule,
     ClarityModule,
     BrowserAnimationsModule,
-    StoreModule.forRoot({ mode: modeReducer })
+    StoreModule.forRoot({ mode: modeReducer }),
+    EffectsModule.forRoot([AuthEffects])
   ],
   providers: [],
   bootstrap: [AppComponent]
