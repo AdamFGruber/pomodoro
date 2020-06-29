@@ -1,16 +1,21 @@
-import { Action } from '@ngrx/store';
+import { TimesActionTypes, TimesActionsUnion } from './times.actions';
 
-export const INPUT = 'INPUT'
+const initialTimes: [number, number] = [25, 5]
 
-const initialTimes: [number, number] = [25, 10]
-
-export function timeReducer(times: [number, number] = initialTimes, action: Action) {
+export function timesReducer(times: [number, number] = initialTimes, action: TimesActionsUnion) {
   switch (action.type) {
-    case INPUT:
+    case TimesActionTypes.SET:
       {
-        return times
+        return action.payload
+      }
+    case TimesActionTypes.RESET:
+      {
+        return initialTimes
       }
     default:
-      return times;
+      {
+        return times;
+      }
+
   }
 }

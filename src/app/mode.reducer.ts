@@ -1,20 +1,18 @@
-import { Action } from '@ngrx/store';
-
-export const START = 'START'
-export const STOP = 'STOP'
-export const SWAP = 'SWAP'
+import { ModeActionTypes, ModeActionsUnion } from './mode.actions';
 
 const initialState: number = 0
 
-export function modeReducer(state: number = initialState, action: Action) {
+export function modeReducer(state: number = initialState, action: ModeActionsUnion) {
   switch (action.type) {
-    case START:
+    case ModeActionTypes.START:
       {
         return (state == 0) ? 1 : state
       }
-    case STOP:
-      { return 0 }
-    case SWAP:
+    case ModeActionTypes.STOP:
+      {
+        return 0
+      }
+    case ModeActionTypes.SWAP:
       {
         if (state == 1) {
           return 2
@@ -25,6 +23,8 @@ export function modeReducer(state: number = initialState, action: Action) {
         else return state
       }
     default:
-      return state;
+      {
+        return state;
+      }
   }
 }

@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { START, STOP, SWAP } from './mode.reducer';
+import * as ModeActions from './mode.actions';
+import * as TimesActions from './times.actions';
 
 interface AppState {
-  mode: number
+  mode: number,
+  times: [number, number]
 }
 
 @Component({
@@ -16,6 +18,7 @@ interface AppState {
 export class AppComponent {
   title: string = 'pomodoro'
   mode$: Observable<number>
+  times$: Observable<[number, number]>
   worktime: number = 25
   breaktime: number = 5
   timeleft: number = 0
@@ -26,13 +29,17 @@ export class AppComponent {
 
   constructor(private store: Store<AppState>) {
     this.mode$ = store.pipe(select('mode'))
+    this.times$ = store.pipe(select('times'))
     this.modeSubscribe()
+    this.timesSubscribe()
     this.audio.load()
   }
 
   modeSubscribe() {
+    console.log("subscribing mode")
     this.mode$.subscribe({
       next: (value) => {
+        console.log("mode value: " + value)
         this.timeleft = 0
         clearInterval(this.interval)
 
@@ -42,6 +49,17 @@ export class AppComponent {
         else if (value == 2) {
           this.startTimer(this.breaktime)
         }
+      }
+    })
+  }
+
+  timesSubscribe() {
+    console.log("subscribing times")
+    this.times$.subscribe({
+      next: (value) => {
+        console.log("times value: " + value)
+        this.worktime = value[0]
+        this.breaktime = value[1]
       }
     })
   }
@@ -57,15 +75,24 @@ export class AppComponent {
   }
 
   start(worktime: number, breaktime: number) {
+
     if (this.validateInput(worktime, breaktime)) {
-      this.worktime = worktime
-      this.breaktime = breaktime
-      this.store.dispatch({ type: START })
+      // this.worktime = worktime
+      // this.breaktime = breaktime
+
+
+
+      this.store.dispatch(new TimesActions.Set([worktime, breaktime]))
+
+      console.log(this.worktime)
+      console.log(this.breaktime)
+
+      this.store.dispatch(new ModeActions.Start())
     }
   }
 
   stop() {
-    this.store.dispatch({ type: STOP })
+    this.store.dispatch(new ModeActions.Stop())
   }
 
   startTimer(minutes: number) {
@@ -78,7 +105,7 @@ export class AppComponent {
       }
       else {
         this.audio.play()
-        this.store.dispatch({ type: SWAP })
+        this.store.dispatch(new ModeActions.Swap())
       }
     }, 1000)
   }

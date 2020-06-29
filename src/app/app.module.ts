@@ -6,6 +6,7 @@ import { ClarityModule } from '@clr/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StoreModule } from '@ngrx/store';
 import { modeReducer } from './mode.reducer';
+import { timesReducer } from './times.reducer';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,7 @@ import { modeReducer } from './mode.reducer';
     BrowserModule,
     ClarityModule,
     BrowserAnimationsModule,
-    StoreModule.forRoot({ mode: modeReducer })
+    StoreModule.forRoot({ mode: modeReducer, times: timesReducer })
   ],
   providers: [],
   bootstrap: [AppComponent]
