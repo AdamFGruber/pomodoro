@@ -9,6 +9,8 @@ import { modeReducer } from './mode.reducer';
 import { timesReducer } from './times.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { ModeEffects } from './mode.effects';
+import { GraphQLModule } from './graphql.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,9 @@ import { ModeEffects } from './mode.effects';
     ClarityModule,
     BrowserAnimationsModule,
     StoreModule.forRoot({ mode: modeReducer, times: timesReducer }),
-    EffectsModule.forRoot([ModeEffects])
+    EffectsModule.forRoot([ModeEffects]),
+    GraphQLModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
