@@ -19,7 +19,7 @@
   <br><br><button (click)="stop()" class="btn btn-primary">Stop Pomodoro!</button><br>
 </div>
 <div>
-  call result length: {{ rates.length }}
+  call result length: {{ rates ? rates.length : 0 }}
 </div>
 <clr-alerts>
   <clr-alert *ngFor="let message of alerts" [clrAlertType]="'warning'">

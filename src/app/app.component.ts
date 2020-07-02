@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
   interval
   timeString: string = ""
   alerts: string[] = []
-  audio = new Audio("src/notify.mp3")
+  audio = new Audio("/assets/notify.mp3")
   rates: any[];
   loading = true;
   error: any;
@@ -87,7 +87,7 @@ export class AppComponent implements OnInit {
   }
 
   validateInput(worktime: number, breaktime: number) {
-    if (worktime > 0 && breaktime > 0) {
+    if (worktime >= 0.1 && breaktime >= 0.1) {
       return true
     }
     else {
