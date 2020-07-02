@@ -1,10 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import * as ModeActions from './mode.actions';
 import * as TimesActions from './times.actions';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
+
+const CurrentUserForProfile = gql`
+  query CurrentUserForProfile {
+    country(code: "GB") {
+      name
+    }
+  }
+`;
 
 interface AppState {
   mode: number,
@@ -17,7 +25,7 @@ interface AppState {
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title: string = 'pomodoro'
   mode$: Observable<number>
   times$: Observable<[number, number]>
@@ -28,9 +36,8 @@ export class AppComponent implements OnInit {
   timeString: string = ""
   alerts: string[] = []
   audio = new Audio("/assets/notify.mp3")
-  rates: any[];
-  loading = true;
-  error: any;
+  countryName: any;
+  private querySubscription: Subscription;
 
   constructor(private store: Store<AppState>, private apollo: Apollo) {
     this.mode$ = store.pipe(select('mode'))
@@ -41,24 +48,17 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.apollo
-      .watchQuery({
-        query: gql`
-          {
-            rates(currency: "USD") {
-              currency
-              rate
-            }
-          }
-        `,
-      })
-      .valueChanges.subscribe(result => {
-        //@ts-ignore
-        this.rates = result.data && result.data.rates;
-        this.loading = result.loading;
-        //@ts-ignore
-        this.error = result.error;
+    this.querySubscription = this.apollo.watchQuery<any>({
+      query: CurrentUserForProfile
+    })
+      .valueChanges
+      .subscribe(({ data }) => {
+        this.countryName = data.country.name;
       });
+  }
+
+  ngOnDestroy() {
+    this.querySubscription.unsubscribe();
   }
 
   modeSubscribe() {

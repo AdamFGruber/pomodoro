@@ -35,7 +35,7 @@ import { InMemoryCache } from "apollo-cache-inmemory";
       return {
         cache: new InMemoryCache(),
         link: httpLink.create({
-          uri: "https://o5x5jzoo7z.sse.codesandbox.io/graphql"
+          uri: "https://countries.trevorblades.com/"
         })
       }
     },
