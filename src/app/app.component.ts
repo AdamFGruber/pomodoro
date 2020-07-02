@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as ModeActions from './mode.actions';
 import * as TimesActions from './times.actions';
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
 
 interface AppState {
   mode: number,
@@ -15,7 +17,7 @@ interface AppState {
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
   title: string = 'pomodoro'
   mode$: Observable<number>
   times$: Observable<[number, number]>
@@ -26,13 +28,37 @@ export class AppComponent {
   timeString: string = ""
   alerts: string[] = []
   audio = new Audio("src/notify.mp3")
+  rates: any[];
+  loading = true;
+  error: any;
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private apollo: Apollo) {
     this.mode$ = store.pipe(select('mode'))
     this.times$ = store.pipe(select('times'))
     this.modeSubscribe()
     this.timesSubscribe()
     this.audio.load()
+  }
+
+  ngOnInit() {
+    this.apollo
+      .watchQuery({
+        query: gql`
+          {
+            rates(currency: "USD") {
+              currency
+              rate
+            }
+          }
+        `,
+      })
+      .valueChanges.subscribe(result => {
+        //@ts-ignore
+        this.rates = result.data && result.data.rates;
+        this.loading = result.loading;
+        //@ts-ignore
+        this.error = result.error;
+      });
   }
 
   modeSubscribe() {

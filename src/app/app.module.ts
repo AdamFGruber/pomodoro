@@ -24,9 +24,23 @@ import { InMemoryCache } from "apollo-cache-inmemory";
     ClarityModule,
     BrowserAnimationsModule,
     StoreModule.forRoot({ mode: modeReducer, times: timesReducer }),
-    EffectsModule.forRoot([ModeEffects])
+    EffectsModule.forRoot([ModeEffects]),
+    HttpClientModule,
+    ApolloModule,
+    HttpLinkModule
   ],
-  providers: [],
+  providers: [{
+    provide: APOLLO_OPTIONS,
+    useFactory: (httpLink: HttpLink) => {
+      return {
+        cache: new InMemoryCache(),
+        link: httpLink.create({
+          uri: "https://o5x5jzoo7z.sse.codesandbox.io/graphql"
+        })
+      }
+    },
+    deps: [HttpLink]
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
