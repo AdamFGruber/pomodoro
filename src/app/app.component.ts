@@ -1,19 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import * as ModeActions from './mode.actions';
 import * as TimesActions from './times.actions';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-
-const PersonQuery = gql`
-query {
-  person(id:29) {
-    name
-    id
-  }
-}
-`;
 
 interface AppState {
   mode: number,
@@ -26,7 +17,7 @@ interface AppState {
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent {
   title: string = 'pomodoro'
   mode$: Observable<number>
   times$: Observable<[number, number]>
@@ -38,7 +29,6 @@ export class AppComponent implements OnInit, OnDestroy {
   alerts: string[] = []
   audio = new Audio("/assets/notify.mp3")
   name: any
-  private querySubscription: Subscription
 
   constructor(private store: Store<AppState>, private apollo: Apollo) {
     this.mode$ = store.pipe(select('mode'))
@@ -48,18 +38,37 @@ export class AppComponent implements OnInit, OnDestroy {
     this.audio.load()
   }
 
-  ngOnInit() {
-    this.querySubscription = this.apollo.watchQuery<any>({
-      query: PersonQuery
+  getById(idinput: string) {
+    this.apollo.watchQuery<any>({
+      query: gql`
+      query {
+        person(id:${idinput}) {
+          name
+          id
+        }
+      }
+      `
     })
       .valueChanges
       .subscribe(({ data }) => {
-        this.name = data.person.name;
+        this.name = data.person.name
       });
+    console.log(idinput)
   }
 
-  ngOnDestroy() {
-    this.querySubscription.unsubscribe();
+  mutate(nameinput: string) {
+    this.apollo.mutate({
+      mutation: gql`
+      mutation {
+        addPerson(person: {name: "${nameinput}"}) {
+          id
+        }
+      }
+      `
+    }).subscribe(({ data }) => {
+      // @ts-ignore
+      console.log("added: " + nameinput + ", id: " + data.addPerson.id)
+    });
   }
 
   modeSubscribe() {
