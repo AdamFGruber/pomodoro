@@ -6,10 +6,14 @@ import * as TimesActions from './times.actions';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 
-const CurrentUserForProfile = gql`
-  query CurrentUserForProfile {
-    country(code: "GB") {
+const Country = gql`
+  query Country{
+    country(code: "CH") {
       name
+      languages{
+        code
+        name
+      }
     }
   }
 `;
@@ -36,8 +40,9 @@ export class AppComponent implements OnInit, OnDestroy {
   timeString: string = ""
   alerts: string[] = []
   audio = new Audio("/assets/notify.mp3")
-  countryName: any;
-  private querySubscription: Subscription;
+  countryName: any
+  languages: String[] = []
+  private querySubscription: Subscription
 
   constructor(private store: Store<AppState>, private apollo: Apollo) {
     this.mode$ = store.pipe(select('mode'))
@@ -49,11 +54,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.querySubscription = this.apollo.watchQuery<any>({
-      query: CurrentUserForProfile
+      query: Country
     })
       .valueChanges
       .subscribe(({ data }) => {
         this.countryName = data.country.name;
+        for (let i = 0; i < data.country.languages.length; i++) {
+          this.languages.push(data.country.languages[i].name)
+        }
       });
   }
 
