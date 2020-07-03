@@ -35,7 +35,8 @@ import { InMemoryCache } from "apollo-cache-inmemory";
       return {
         cache: new InMemoryCache(),
         link: httpLink.create({
-          uri: "https://countries.trevorblades.com/"
+          uri: "http://localhost:8080",
+          withCredentials: true
         })
       }
     },

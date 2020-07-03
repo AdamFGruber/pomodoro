@@ -18,11 +18,7 @@
   {{(mode$ | async) == 1 ? "work" : "break"}} time left: {{timeString}}
   <br><br><button (click)="stop()" class="btn btn-primary">Stop Pomodoro!</button><br>
 </div>
-Country:
-Language List:
-<ul *ngFor="let entry of data | async">
-  name: {{entry.name}}
-</ul>
+Name: {{ name }}
 <clr-alerts>
   <clr-alert *ngFor="let message of alerts" [clrAlertType]="'warning'">
     <clr-alert-item>
