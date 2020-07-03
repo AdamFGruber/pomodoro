@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import * as ModeActions from './mode.actions';
 import * as TimesActions from './times.actions';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
 
-const Country = gql`
-  query Country{
+const CountryQuery = gql`
+  query Languages{
     country(code: "CH") {
       name
       languages{
@@ -43,6 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
   countryName: any
   languages: String[] = []
   private querySubscription: Subscription
+  data: Observable<any>;
 
   constructor(private store: Store<AppState>, private apollo: Apollo) {
     this.mode$ = store.pipe(select('mode'))
@@ -52,17 +54,24 @@ export class AppComponent implements OnInit, OnDestroy {
     this.audio.load()
   }
 
+  // ngOnInit() {
+  //   this.querySubscription = this.apollo.watchQuery<any>({
+  //     query: CountryQuery
+  //   })
+  //     .valueChanges
+  //     .subscribe(({ data }) => {
+  //       this.countryName = data.country.name;
+  //       for (let i = 0; i < data.country.languages.length; i++) {
+  //         this.languages.push(data.country.languages[i].name)
+  //       }
+  //     });
+  // }
+
   ngOnInit() {
-    this.querySubscription = this.apollo.watchQuery<any>({
-      query: Country
-    })
-      .valueChanges
-      .subscribe(({ data }) => {
-        this.countryName = data.country.name;
-        for (let i = 0; i < data.country.languages.length; i++) {
-          this.languages.push(data.country.languages[i].name)
-        }
-      });
+    this.data = this.apollo
+      .watchQuery({ query: CountryQuery })
+      //@ts-ignore
+      .valueChanges.pipe(map(({ data }) => data.languages));
   }
 
   ngOnDestroy() {
