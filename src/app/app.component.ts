@@ -1,12 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as ModeActions from './mode.actions';
 import * as TimesActions from './times.actions';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { Injectable } from '@angular/core';
-import { Subscription } from 'apollo-angular';
+import { NewCommentGQL } from './graphql';
 
 interface AppState {
   mode: number,
@@ -17,10 +16,6 @@ interface AppState {
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
-})
-
-@Injectable({
-  providedIn: 'root',
 })
 
 export class AppComponent {
@@ -35,13 +30,15 @@ export class AppComponent {
   alerts: string[] = []
   audio = new Audio("/assets/notify.mp3")
   name: any
+  lastComment: any
 
-  constructor(private store: Store<AppState>, private apollo: Apollo) {
+  constructor(private store: Store<AppState>, private apollo: Apollo, newCommentGQL: NewCommentGQL) {
     this.mode$ = store.pipe(select('mode'))
     this.times$ = store.pipe(select('times'))
     this.modeSubscribe()
     this.timesSubscribe()
     this.audio.load()
+    this.lastComment = newCommentGQL.subscribe();
   }
 
   getById(idinput: string) {

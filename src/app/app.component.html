@@ -25,6 +25,10 @@ Name: {{ name }} <br>
 Enter new name to add: <input #nameinput type="string" ngModel><br>
 <button (click)="mutate(nameinput.value)" class="btn btn-primary">Add</button><br>
 
+<br><br>
+
+last comment: {{ lastComment }}
+
 <clr-alerts>
   <clr-alert *ngFor="let message of alerts" [clrAlertType]="'warning'">
     <clr-alert-item>
