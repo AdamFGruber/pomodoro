@@ -1,4 +1,6 @@
 import { AppPage } from './app.po';
+import { browser } from 'protractor';
+
 
 describe('workspace-project App', () => {
   let page: AppPage;
@@ -27,14 +29,15 @@ describe('workspace-project App', () => {
     expect(page.getFormDiv().isDisplayed()).toBe(true);
   });
 
-  // Fix Async error. Times out
-  // it('timer is visible once started', function () {
-  //   page.navigateTo();
+  it('timer is visible once started', function () {
 
-  //   page.getWorkInput().sendKeys(2);
-  //   page.getBreakInput().sendKeys(5);
-  //   page.getStartButton().click();
+    page.navigateTo();
+    browser.waitForAngularEnabled(false);
 
-  //   expect(page.getTimerDiv().isDisplayed()).toBe(true);
-  // });
+    page.getWorkInput().sendKeys(2);
+    page.getBreakInput().sendKeys(5);
+    page.getStartButton().click();
+
+    expect(page.getTimerDiv().isDisplayed()).toBe(true);
+  });
 });
